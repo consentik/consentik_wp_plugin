@@ -56,12 +56,24 @@ class Consentik_CMP
             'sanitize_callback' => 'sanitize_text_field',
         ));
 
+        register_setting('consentik_cmp_settings', 'consentik_enable_gcm', array(
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+
         add_settings_section(
             'consentik_cmp_section',
             'Consentik CMP Configuration',
             array($this, 'settings_section_callback'),
             'consentik-cmp-settings'
         );
+
+        add_settings_section(
+            'consentik_cmp_gcm_section',
+            '',
+            array($this, 'gcm_section_callback'),
+            'consentik-cmp-settings'
+        );
+
 
         add_settings_field(
             'consentik_site_id',
@@ -79,9 +91,18 @@ class Consentik_CMP
             'consentik_cmp_section'
         );
 
+        add_settings_field(
+            'consentik_enable_gcm',
+            '',
+            array($this, 'enable_gcm_field_callback'),
+            'consentik-cmp-settings',
+            'consentik_cmp_gcm_section',
+            array('label_for' => 'consentik_enable_gcm', 'class' => 'full-width-row')
+        );
+
         add_action('admin_notices', function () {
             $screen = get_current_screen();
-            if ( $screen->id !== 'toplevel_page_consentik-cmp-settings' ) {
+            if ($screen->id !== 'toplevel_page_consentik-cmp-settings') {
                 return;
             }
             if (!defined('WP_CONSENT_API_VERSION') && !class_exists('WP_Consent_API')) {
@@ -101,6 +122,25 @@ class Consentik_CMP
         $siteId = get_option('consentik_site_id', '');
         echo '<p>Configure your Consentik CMP integration settings below.</p>';
         echo '<p>How do you get a Site ID and Instance ID? <a style="font-weight: bold" target="_blank" href="https://cmp.consentik.com/app/' . esc_attr($siteId) . '">Check your site’s Consentik Dashboard here</a>. </p>';
+    }
+
+    /**
+     * GCM Section callback
+     */
+    public function gcm_section_callback()
+    {
+        echo '<hr style="border-top: 2px solid #c3c4c7; border-bottom: 0; margin: 2rem 0; width: 34vw">';
+        echo '<h2>Settings</h2>';
+    }
+
+    public function enable_gcm_field_callback()
+    {
+        $value = get_option('consentik_enable_gcm', '');
+        $checked = $value === 'on' ? "checked='checked'" : "";
+        echo '<div style="display: flex; align-items: center; gap: 10px;">';
+        echo '<input id="enable_gcm" type="checkbox" name="consentik_enable_gcm" ' . esc_attr($checked) . '  />';
+        echo '<label for="enable_gcm" class="description">Enable Google Consent Mode V2 on your website</label>';
+        echo '<div>';
     }
 
     /**
@@ -160,23 +200,6 @@ class Consentik_CMP
         <?php
     }
 
-    /**
-     * Add Consentik script to wp_head
-     */
-//    public function add_consentik_script()
-//    {
-//        $site_id = get_option('consentik_site_id', '');
-//        $instance_id = get_option('consentik_instance_id', '');
-//
-//        // Only add script if both IDs are configured
-//        if (empty($site_id) || empty($instance_id)) {
-//            return;
-//        }
-//
-//        echo '<!-- Consentik script -->' . "\n";
-//        echo '<script>!function(e,t,n,s,i,c){const a=t.getElementsByTagName(n)[0],d=t.createElement(n);d.id="cst-package",d.async=!0,d.src="https://cmp.consentik.com/sites/' . esc_js($instance_id) . '/' . esc_js($site_id) . '/index.js?v=' . esc_js(time()) . '",a.parentNode.insertBefore(d,a)}(window,document,"script");</script>' . "\n";
-//        echo '<!-- End Consentik script -->' . "\n";
-//    }
     public function add_consentik_script()
     {
         $site_id = get_option('consentik_site_id', '');
@@ -186,7 +209,7 @@ class Consentik_CMP
             return;
         }
 
-        $script_url = "https://cmp.consentik.com/sites/" . esc_attr($instance_id) . "/" . esc_attr($site_id) . "/index.js?v=" . time();
+        $script_url = WP_CMP_API . "/sites/" . esc_attr($instance_id) . "/" . esc_attr($site_id) . "/index.js?v=" . time();
 
         wp_enqueue_script('consentik-cmp-js', $script_url, array(), CONSENTIK_CMP_VERSION, false);
 
