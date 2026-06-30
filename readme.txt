@@ -3,8 +3,8 @@ Contributors: consentik
 Donate link: https://consentik.com/
 Tags: gdpr, cookie banner, consentik, cookie consent, ccpa
 Requires at least: 6.0
-Tested up to: 6.9
-Stable tag: 1.0.1
+Tested up to: 7.0
+Stable tag: 1.0.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,16 @@ Consentik is designed to help you comply with major global privacy laws, includi
 = Do I need coding skills to use this plugin? =
 No coding is required. The setup is designed to be user-friendly. Simply install the plugin, enter your IDs, and configure your preferences using the visual settings panel.
 == Changelog ==
+= 1.0.4 =
+* Confirmed compatibility with WordPress 7.0.
+* Updated the Consentik Dashboard link on the settings page.
+
+= 1.0.3 =
+* Fixed the admin settings UI alignment for the "Wait for update" field.
+
+= 1.0.2 =
+* Added a "Wait for update" setting to configure the Google Consent Mode v2 wait_for_update delay (default 500ms).
+
 = 1.0.1 =
 * Added support for Google Consent Mode v2.
 * Updated consent signals to meet Google’s latest requirements.
@@ -89,6 +99,12 @@ No coding is required. The setup is designed to be user-friendly. Simply install
 = 1.0.0 =
 *   Initial release.
 == Upgrade Notice ==
+= 1.0.4 =
+Confirms WordPress 7.0 compatibility and updates the Consentik Dashboard link.
+= 1.0.3 =
+Fixes the admin settings UI alignment for the Wait for update field.
+= 1.0.2 =
+Adds a configurable Wait for update delay for Google Consent Mode v2.
 = 1.0.1 =
 Update Google Consent Mode V2 implement.
 = 1.0.1 =

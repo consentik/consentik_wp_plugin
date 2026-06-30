@@ -3,7 +3,7 @@
  * Plugin Name: Consentik CMP – GDPR/CCPA Cookie Consent Banner
  * Plugin URI: https://consentik.com
  * Description: A WordPress plugin to manage Consentik CMP integration with siteId and instanceId configuration.
- * Version: 1.0.1
+ * Version: 1.0.4
  * Author: Consentik
  * License: GPL v2 or later
  * Text Domain: consentik-cmp
@@ -17,7 +17,7 @@ if (!defined('WP_CMP_API')) {
     define('WP_CMP_API', 'https://cmp.consentik.com');
 }
 // Define plugin constants
-define('CONSENTIK_CMP_VERSION', '1.0.0');
+define('CONSENTIK_CMP_VERSION', '1.0.4');
 define('CONSENTIK_CMP_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('CONSENTIK_CMP_PLUGIN_PATH', plugin_dir_path(__FILE__));
 
@@ -42,6 +42,9 @@ function consentik_cmp_activate()
     }
     if (!get_option('consentik_instance_id')) {
         add_option('consentik_instance_id', '');
+    }
+    if (get_option('consentik_wait_for_update') === false) {
+        add_option('consentik_wait_for_update', 500);
     }
 }
 
@@ -103,6 +106,7 @@ add_action('wp_head', function () {
         'personalization_storage' => 'denied',
         'ads_data_redaction' => false,
         'url_passthrough' => false,
+        'wait_for_update' => (int) get_option('consentik_wait_for_update', 500),
     ];
 
     if (isset($data->integrate->googleConsentMode)) {
@@ -147,7 +151,7 @@ add_action('wp_head', function () {
             security_storage: config.security_storage,
             functionality_storage: config.functionality_storage,
             personalization_storage: config.personalization_storage,
-            wait_for_update: 500
+            wait_for_update: config.wait_for_update
         });
         gtag('set', 'developer_id.dNjA1Yz', true);
         if (config.ads_data_redaction) {

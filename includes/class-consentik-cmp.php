@@ -60,6 +60,12 @@ class Consentik_CMP
             'sanitize_callback' => 'sanitize_text_field',
         ));
 
+        register_setting('consentik_cmp_settings', 'consentik_wait_for_update', array(
+            'type' => 'integer',
+            'sanitize_callback' => 'absint',
+            'default' => 500,
+        ));
+
         add_settings_section(
             'consentik_cmp_section',
             'Consentik CMP Configuration',
@@ -100,6 +106,15 @@ class Consentik_CMP
             array('label_for' => 'consentik_enable_gcm', 'class' => 'full-width-row')
         );
 
+        add_settings_field(
+            'consentik_wait_for_update',
+            '',
+            array($this, 'wait_for_update_field_callback'),
+            'consentik-cmp-settings',
+            'consentik_cmp_gcm_section',
+            array('label_for' => 'consentik_wait_for_update', 'class' => 'full-width-row')
+        );
+
         add_action('admin_notices', function () {
             $screen = get_current_screen();
             if ($screen->id !== 'toplevel_page_consentik-cmp-settings') {
@@ -119,9 +134,8 @@ class Consentik_CMP
      */
     public function settings_section_callback()
     {
-        $siteId = get_option('consentik_site_id', '');
         echo '<p>Configure your Consentik CMP integration settings below.</p>';
-        echo '<p>How do you get a Site ID and Instance ID? <a style="font-weight: bold" target="_blank" href="https://cmp.consentik.com/app/' . esc_attr($siteId) . '">Check your site’s Consentik Dashboard here</a>. </p>';
+        echo '<p>How do you get a Site ID and Instance ID? <a style="font-weight: bold" target="_blank" href="https://cmp.consentik.com/admin/">Check your site’s Consentik Dashboard here</a>. </p>';
     }
 
     /**
@@ -141,6 +155,14 @@ class Consentik_CMP
         echo '<input id="enable_gcm" type="checkbox" name="consentik_enable_gcm" ' . esc_attr($checked) . '  />';
         echo '<label for="enable_gcm" class="description">Enable Google Consent Mode V2 on your website</label>';
         echo '<div>';
+    }
+
+    public function wait_for_update_field_callback()
+    {
+        $value = get_option('consentik_wait_for_update', 500);
+        echo '<label for="consentik_wait_for_update" style="display:block; font-weight:600; margin-bottom:6px;">Wait for update (ms)</label>';
+        echo '<input id="consentik_wait_for_update" type="number" min="0" step="100" name="consentik_wait_for_update" value="' . esc_attr($value) . '" class="small-text" />';
+        echo '<p class="description">Milliseconds the Google Consent Mode default state waits for a consent update before tags fire. Default: 500.</p>';
     }
 
     /**
