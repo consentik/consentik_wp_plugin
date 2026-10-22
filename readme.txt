@@ -4,7 +4,7 @@ Donate link: https://consentik.com/
 Tags: gdpr, cookie banner, consentik, cookie consent, ccpa
 Requires at least: 6.0
 Tested up to: 7.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,12 @@ Consentik is designed to help you comply with major global privacy laws, includi
 = Do I need coding skills to use this plugin? =
 No coding is required. The setup is designed to be user-friendly. Simply install the plugin, enter your IDs, and configure your preferences using the visual settings panel.
 == Changelog ==
+= 1.0.5 =
+* Google Consent Mode v2: the plugin now loads the site's gcm.js synchronously, so region-scoped consent defaults, out-of-region measurement, and saved-consent restoration apply before any Google tag fires.
+* Consent defaults are now always denied until the visitor acts, in line with Google CMP Partner Program requirements.
+* Fixed an issue where region-based consent defaults were suppressed by the inline consent snippet.
+* Removed the remote configuration request on every page load, improving page rendering speed.
+
 = 1.0.4 =
 * Confirmed compatibility with WordPress 7.0.
 * Updated the Consentik Dashboard link on the settings page.
@@ -99,6 +105,8 @@ No coding is required. The setup is designed to be user-friendly. Simply install
 = 1.0.0 =
 *   Initial release.
 == Upgrade Notice ==
+= 1.0.5 =
+Important Google Consent Mode v2 fix: region-scoped consent defaults now apply correctly. Recommended for all sites with GCM enabled.
 = 1.0.4 =
 Confirms WordPress 7.0 compatibility and updates the Consentik Dashboard link.
 = 1.0.3 =
